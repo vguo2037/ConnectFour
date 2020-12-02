@@ -1,1 +1,1 @@
-# ConnectFour
+# ConnectFour console game

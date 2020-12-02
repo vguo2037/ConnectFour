@@ -13,11 +13,11 @@ class ConnectFour:
         cur_player = 1
         end = False
         number_of_moves = 0
-        total_moves = self.NUMBER_OF_ROWS*self.NUMBER_OF_COLUMNS
-        while end != True:
+        total_moves = self.NUMBER_OF_ROWS * self.NUMBER_OF_COLUMNS
+        while not end:
             valid = False
             print(self.matrix)
-            print(f'Player{cur_player} move. Choose the column by typing its number:')
+            print(f'Player{cur_player} move. Choose a column by typing its number:')
             while not valid:
                 choice = int(input())
                 valid = self.check_choice(choice)
@@ -30,7 +30,7 @@ class ConnectFour:
             if number_of_moves == total_moves:
                 print('Game is over!')
                 end = True
-            #Switch players
+            # Switch players
             if cur_player == 1:
                 cur_player = 2
             else:
@@ -44,10 +44,10 @@ class ConnectFour:
 
     def check_choice(self, choice):
         if choice not in self.CHOICES:
-            print('Wrong choice. Chose columns from 0 to 5')
+            print('Wrong choice. Choose columns from 0 to 5')
             return False
         if self.column_is_full(choice):
-            print('The column is full. Chose another one')
+            print('The column is full. Choose another one')
             return False
         return True
 
@@ -57,27 +57,50 @@ class ConnectFour:
                 self.matrix[i][column] = cur_player
                 break
         return i
+
     def check_win(self, cur_player, column, row):
-        #right
-        count = 1
-        for i in range(column+1, self.NUMBER_OF_COLUMNS):
-            if self.matrix[row][i] == cur_player:
-                count +=1
-            else:
-                break
-        #left
-        for i in reversed(range(0, column-1)):
+        # horizontal
+        count = 0
+        for i in range(self.NUMBER_OF_COLUMNS):
             if self.matrix[row][i] == cur_player:
                 count += 1
+                if count == 4:
+                    return True
             else:
-                break
+                count = 0
 
-        #bottom
+        # vertical
+        count = 0
+        for i in range(self.NUMBER_OF_ROWS):
+            if self.matrix[i][column] == cur_player:
+                count += 1
+                if count == 4:
+                    return True
+            else:
+                count = 0
 
-        if count == 3:
-            return True
-        else:
-            return False
+        # left diagonal
+        count = 0
+        diag = np.diag(self.matrix, column - row)
+        for i in diag:
+            if i == cur_player:
+                count += 1
+                if count == 4:
+                    return True
+            else:
+                count = 0
+
+        # right diagonal
+        count = 0
+        diag = np.diag(np.fliplr(self.matrix), (ConnectFour.NUMBER_OF_COLUMNS - 1- column)-row)
+        for i in diag:
+            if i == cur_player:
+                count += 1
+                if count == 4:
+                    return True
+            else:
+                count = 0
+
 
 if __name__ == '__main__':
     connectFour = ConnectFour()

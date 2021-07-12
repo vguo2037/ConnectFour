@@ -36,11 +36,14 @@ class ConnectFour:
 
     ################################################################
     def __init__(self):
+        """__init__"""
         print(self.term.home + self.term.clear)
-        self.num_row, self.num_col = self.get_nRow_nCol()
+        self.num_row, self.num_col = self.get_nrow_ncol()
+        self.avail_choices = set(range(self.num_col))
         self.matrix = self.np.zeros((self.num_row, self.num_col), self.np.int8)
 
-    def get_nRow_nCol(self):
+    def get_nrow_ncol(self):
+        """set custom board size"""
         num_row, num_col = None, None
         size = self.term.move_xy(self.term.width//2-41, self.term.height//3) + \
            "Please enter the number of rows and columns of board in the format HEIGHT x WIDTH.\n"
@@ -51,9 +54,6 @@ class ConnectFour:
             try:
                 print(size_buffer, end="", flush=True)
                 num_row, num_col = input("").split("x", 2)
-            except EOFError:
-                print("\nKeyboardInterrupt")
-                exit()
             except ValueError:
                 error = self.term.move_xy(self.term.width//2-18, self.term.height//3) + \
                         "Please use the format HEIGHT x WIDTH."
@@ -95,9 +95,8 @@ class ConnectFour:
         return num_row, num_col
 
     def start(self):
+        """plays game of set size"""
         print(self.term.home + self.term.clear)
-        ################################################################
-        self.CHOICES = set(range(self.num_col))
         cur_player = 1
         end = False
         number_of_moves = 0
@@ -106,7 +105,9 @@ class ConnectFour:
         col_head_txt = f"  {self.COL_SYMBOLS[0]}"
         for i in range(1, self.num_col):
             col_head_txt += f"   {self.COL_SYMBOLS[i]}"
-        col_head = self.term.move_xy(self.term.width//2-(self.num_col*4+1)//2, self.term.height//4) + col_head_txt
+        col_head = self.term.move_xy(self.term.width//2-(self.num_col*4+1)//2,
+                                     self.term.height//4) + \
+                   col_head_txt
         print(col_head, end="\n", flush=True)
 
         for i in range(self.num_row):
@@ -116,29 +117,40 @@ class ConnectFour:
             print("│")
         print(" " * (self.term.width//2-(self.num_col*4+1)//2), end="")
         print("⎺"*(self.num_col*4+1))
-        
-        prompt1_p1 = self.term.move_xy(self.term.width//2-8, self.term.height//4+self.num_row+5) + \
+
+        prompt1_p1 = self.term.move_xy(self.term.width//2-8,
+                                       self.term.height//4+self.num_row+5) + \
                      f"Player {self.style_p1('1')+self.style_default}'s turn."
-        prompt1_p2 = self.term.move_xy(self.term.width//2-8, self.term.height//4+self.num_row+5) + \
+        prompt1_p2 = self.term.move_xy(self.term.width//2-8,
+                                       self.term.height//4+self.num_row+5) + \
                      f"Player {self.style_p2('2')+self.style_default}'s turn."
-        prompt1_win1 = self.term.move_xy(self.term.width//2-8, self.term.height//4+self.num_row+5) + \
+        prompt1_win1 = self.term.move_xy(self.term.width//2-8,
+                                         self.term.height//4+self.num_row+5) + \
                        f"Player {self.style_p1('1')+self.style_default} has won!"
-        prompt1_win2 = self.term.move_xy(self.term.width//2-8, self.term.height//4+self.num_row+5) + \
+        prompt1_win2 = self.term.move_xy(self.term.width//2-8,
+                                         self.term.height//4+self.num_row+5) + \
                        f"Player {self.style_p2('2')+self.style_default} has won!"
-        prompt1_draw = self.term.move_xy(self.term.width//2-6, self.term.height//4+self.num_row+5) + \
+        prompt1_draw = self.term.move_xy(self.term.width//2-6,
+                                         self.term.height//4+self.num_row+5) + \
                        "Game is over!"
-        prompt1_erase = self.term.move_xy(self.term.width//2-8, self.term.height//4+self.num_row+5) + \
+        prompt1_erase = self.term.move_xy(self.term.width//2-8,
+                                          self.term.height//4+self.num_row+5) + \
                         "                  "
 
-        prompt2 = self.term.move_xy(self.term.width//2-18, self.term.height//4+self.num_row+7) + \
+        prompt2 = self.term.move_xy(self.term.width//2-18,
+                                    self.term.height//4+self.num_row+7) + \
                   "Choose a column by typing its letter."
-        prompt2_error = self.term.move_xy(self.term.width//2-21, self.term.height//4+self.num_row+7) + \
+        prompt2_error = self.term.move_xy(self.term.width//2-21,
+                                          self.term.height//4+self.num_row+7) + \
                     f"Invalid column. Choose a column from A to {self.COL_SYMBOLS[self.num_col-1]}"
-        prompt2_full = self.term.move_xy(self.term.width//2-23, self.term.height//4+self.num_row+7) + \
-                    f"The column is full. Choose a column from A to {self.COL_SYMBOLS[self.num_col-1]}"
-        prompt2_erase = self.term.move_xy(self.term.width//2-23, self.term.height//4+self.num_row+7) + \
+        prompt2_full = self.term.move_xy(self.term.width//2-23,
+                                         self.term.height//4+self.num_row+7) + \
+                    f"Column is full. Choose a column from A to {self.COL_SYMBOLS[self.num_col-1]}"
+        prompt2_erase = self.term.move_xy(self.term.width//2-23,
+                                          self.term.height//4+self.num_row+7) + \
                   "                                               "
-        prompt2_end = self.term.move_xy(self.term.width//2-18, self.term.height//4+self.num_row+7) + \
+        prompt2_end = self.term.move_xy(self.term.width//2-18,
+                                        self.term.height//4+self.num_row+7) + \
                   "Press R to restart, press Q to quit."
 
         with self.term.cbreak(), self.term.hidden_cursor():
@@ -161,9 +173,6 @@ class ConnectFour:
                     except ValueError:
                         print(prompt2_error, end="", flush=True)
                         continue
-                    except EOFError:
-                        print("Keyboard interrupt")
-                        exit()
                     valid = self.check_choice(choice, prompt2_error, prompt2_full)
 
 
@@ -195,19 +204,19 @@ class ConnectFour:
                 choice_sym = self.term.inkey(timeout=0.5)
                 if choice_sym == "r":
                     return True
-                elif choice_sym == "q":
+                if choice_sym == "q":
                     return False
-                else:
-                    pass
 
     def column_is_full(self, column):
+        """check if a chosen column is full"""
         for i in range(self.num_row):
             if self.matrix[i][column] == 0:
                 return False
         return True
 
     def check_choice(self, choice, prompt2_error, prompt2_full):
-        if choice not in self.CHOICES:
+        """check if a chosen column is within the board"""
+        if choice not in self.avail_choices:
             print(prompt2_error, end="", flush=True)
             return False
         if self.column_is_full(choice):
@@ -216,6 +225,7 @@ class ConnectFour:
         return True
 
     def drop(self, cur_player, column):
+        """drops a disc in a column"""
         for i in range(self.num_row):
             self.time.sleep(0.15)
             if cur_player == 1:
@@ -240,7 +250,7 @@ class ConnectFour:
         return i
 
     def check_win(self, cur_player, column, row):
-        # horizontal
+        """check if a player has won"""
         count = 0
         for i in range(self.num_col):
             if self.matrix[row][i] == cur_player:
@@ -282,10 +292,9 @@ class ConnectFour:
             else:
                 count = 0
 
-
 if __name__ == '__main__':
     play = True
-    while play == True:
+    while play:
         connectFour = ConnectFour()
         play = connectFour.start()
     print("\n\n\n\n\n\n                      GAME ENDED. RETURN TO MAIN MENU.\n\n\n\n\n\n")

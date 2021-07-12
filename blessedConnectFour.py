@@ -36,6 +36,7 @@ class ConnectFour:
 
     ################################################################
     def __init__(self):
+        print(self.term.home + self.term.clear)
         self.num_row, self.num_col = self.get_nRow_nCol()
         self.matrix = self.np.zeros((self.num_row, self.num_col), self.np.int8)
 
@@ -120,8 +121,14 @@ class ConnectFour:
                      f"Player {self.style_p1('1')+self.style_default}'s turn."
         prompt1_p2 = self.term.move_xy(self.term.width//2-8, self.term.height//4+self.num_row+5) + \
                      f"Player {self.style_p2('2')+self.style_default}'s turn."
+        prompt1_win1 = self.term.move_xy(self.term.width//2-8, self.term.height//4+self.num_row+5) + \
+                       f"Player {self.style_p1('1')+self.style_default} has won!"
+        prompt1_win2 = self.term.move_xy(self.term.width//2-8, self.term.height//4+self.num_row+5) + \
+                       f"Player {self.style_p2('2')+self.style_default} has won!"
+        prompt1_draw = self.term.move_xy(self.term.width//2-6, self.term.height//4+self.num_row+5) + \
+                       "Game is over!"
         prompt1_erase = self.term.move_xy(self.term.width//2-8, self.term.height//4+self.num_row+5) + \
-                        "                "
+                        "                  "
 
         prompt2 = self.term.move_xy(self.term.width//2-18, self.term.height//4+self.num_row+7) + \
                   "Choose a column by typing its letter."
@@ -131,18 +138,19 @@ class ConnectFour:
                     f"The column is full. Choose a column from A to {self.COL_SYMBOLS[self.num_col-1]}"
         prompt2_erase = self.term.move_xy(self.term.width//2-23, self.term.height//4+self.num_row+7) + \
                   "                                               "
+        prompt2_end = self.term.move_xy(self.term.width//2-18, self.term.height//4+self.num_row+7) + \
+                  "Press R to restart, press Q to quit."
 
         with self.term.cbreak(), self.term.hidden_cursor():
+            print()
+            print()
+            if cur_player == 1:
+                print(prompt1_erase+prompt1_p1, end="", flush=True)
+            else:
+                print(prompt1_erase+prompt1_p2, end="", flush=True)
+            print(prompt2_erase+prompt2, end="", flush=True)
             while not end:
                 valid = False
-
-                print()
-                print()
-                if cur_player == 1:
-                    print(prompt1_erase+prompt1_p1, end="", flush=True)
-                else:
-                    print(prompt1_erase+prompt1_p2, end="", flush=True)
-                print(prompt2_erase+prompt2, end="", flush=True)
 
                 while not valid:
                     try:
@@ -158,19 +166,39 @@ class ConnectFour:
                         exit()
                     valid = self.check_choice(choice, prompt2_error, prompt2_full)
 
+
+                if cur_player == 1:
+                    print(prompt1_erase+prompt1_p2, end="", flush=True)
+                else:
+                    print(prompt1_erase+prompt1_p1, end="", flush=True)
+                print(prompt2_erase+prompt2, end="", flush=True)
                 row = self.drop(cur_player, choice)
+
                 number_of_moves += 1
                 if self.check_win(cur_player, choice, row):
-                    print(f'Player {cur_player} has won!')
+                    if cur_player == 1:
+                        print(prompt1_win1, end="", flush=True)
+                    else:
+                        print(prompt1_win2, end="", flush=True)
                     end = True
                 if number_of_moves == total_moves:
-                    print('Game is over!')
+                    print(prompt1_erase+prompt1_draw, end="", flush=True)
                     end = True
                 # Switch players
                 if cur_player == 1:
                     cur_player = 2
                 else:
                     cur_player = 1
+
+            print(prompt2_erase+prompt2_end, end="", flush=True)
+            while True:
+                choice_sym = self.term.inkey(timeout=0.5)
+                if choice_sym == "r":
+                    return True
+                elif choice_sym == "q":
+                    return False
+                else:
+                    pass
 
     def column_is_full(self, column):
         for i in range(self.num_row):
@@ -189,7 +217,7 @@ class ConnectFour:
 
     def drop(self, cur_player, column):
         for i in range(self.num_row):
-            self.time.sleep(0.1)
+            self.time.sleep(0.15)
             if cur_player == 1:
                 disc_text = self.style_p1("1")
             else:
@@ -256,5 +284,8 @@ class ConnectFour:
 
 
 if __name__ == '__main__':
-    connectFour = ConnectFour()
-    connectFour.start()
+    play = True
+    while play == True:
+        connectFour = ConnectFour()
+        play = connectFour.start()
+    print("\n\n\n\n\n\n                      GAME ENDED. RETURN TO MAIN MENU.\n\n\n\n\n\n")

@@ -1,6 +1,15 @@
+import curses
+
+screen = curses.initscr()
+curses.cbreak()
+screen.keypad(1)
+curses.noecho()
+
+
 class ConnectFour:
     import numpy as np
     import time
+    import getpass
     from blessed import Terminal
 
     tm = Terminal()
@@ -55,7 +64,13 @@ class ConnectFour:
     def __init__(self):
         """__init__"""
         print(self.tm.home + self.tm.clear)
+        curses.nocbreak()
+        screen.keypad(0)
+        curses.echo()
         self.nrow, self.ncol = self.get_nrow_ncol()
+        curses.cbreak()
+        screen.keypad(1)
+        curses.noecho()
         self.avail_choices = set(range(self.ncol))
         self.mx = self.np.zeros((self.nrow, self.ncol), self.np.int8)
 
@@ -141,25 +156,43 @@ class ConnectFour:
         number_of_moves = 0
         total_moves = self.nrow * self.ncol
 
-        col_head_txt = f"  {self.COL_SYMS[0]}"
+        head_row_txt = f"  {self.COL_SYMS[0]}"
         for i in range(1, self.ncol):
-            col_head_txt += f"   {self.COL_SYMS[i]}"
-        col_head = (
+            head_row_txt += f"   {self.COL_SYMS[i]}"
+        head_row = (
             self.tm.move_xy(
                 self.wth // 2 - (self.ncol * 4 + 1) // 2,
                 self.hgt // 4,
             )
-            + col_head_txt
+            + head_row_txt
         )
-        print(col_head, end="\n", flush=True)
+        print(head_row, end="", flush=True)
 
         for i in range(self.nrow):
-            print(" " * (self.wth // 2 - (self.ncol * 4 + 1) // 2), end="")
+            body_row_txt = ""  # * (self.wth // 2 - (self.ncol * 4 + 1) // 2)
             for j in range(self.ncol):
-                print(f"│ {self.mx[i][j]} ", end="")
-            print("│")
-        print(" " * (self.wth // 2 - (self.ncol * 4 + 1) // 2), end="")
-        print("⎺" * (self.ncol * 4 + 1))
+                body_row_txt += f"│ {self.mx[i][j]} "
+            body_row_txt += "│\n"
+            body_row = (
+                self.tm.move_xy(
+                    self.wth // 2 - (self.ncol * 4 + 1) // 2,
+                    self.hgt // 4 + 1 + i,
+                )
+                + body_row_txt
+            )
+            print(body_row, end="", flush=True)
+
+        foot_row_txt = "⎺" * (self.ncol * 4 + 1)
+        # + "" * (self.wth // 2 - (self.ncol * 4 + 1) // 2) + \
+
+        foot_row = (
+            self.tm.move_xy(
+                self.wth // 2 - (self.ncol * 4 + 1) // 2,
+                self.hgt // 4 + self.nrow + 1,
+            )
+            + foot_row_txt
+        )
+        print(foot_row, end="", flush=True)
 
         prpt_pd = self.hgt // 4 + self.nrow + 3
         prpt1_p1 = (

@@ -4,9 +4,9 @@ class ConnectFour:
     from blessed import Terminal
 
     tm = Terminal()
-    sty_default = tm.white_on_blue
-    sty_p1 = tm.yellow_on_blue
-    sty_p2 = tm.red_on_blue
+    sty_default = tm.bright_white_on_blue2
+    sty_p1 = tm.bright_yellow_on_blue2
+    sty_p2 = tm.coral1_on_blue2
     hgt = tm.height
     wth = tm.width
 
@@ -26,7 +26,7 @@ class ConnectFour:
     ################################################################
     with tm.cbreak(), tm.hidden_cursor():
         # clear the screen
-        print(tm.home + tm.white_on_blue + tm.clear)
+        print(tm.home + sty_default + tm.clear)
 
         for i in range(len(TITLE)):
             title_part = (
@@ -63,9 +63,8 @@ class ConnectFour:
         """set custom board size"""
         nrow, ncol = None, None
         size_prpt = (
-            self.tm.move_xy(self.wth // 2 - 32, self.hgt // 3)
-            + "Please enter the size of the board "
-            + "in the format HEIGHT x WIDTH.\n"
+            self.tm.move_xy(self.wth // 2 - 26, self.hgt // 3)
+            + "Please enter the size of the board as HEIGHT x WIDTH.\n"
         )
         print(size_prpt, end="", flush=True)
         size_pd = self.tm.move_y(self.hgt // 2) + f"\n{' '*(self.wth//2-2)}"

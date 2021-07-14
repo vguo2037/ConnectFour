@@ -20,17 +20,22 @@ class ConnectFour:
     hgt = tm.height
     wth = tm.width
 
-    if hgt < 24 or wth < 80:
+
+    if hgt < 11 or wth < 60:
         TITLE_TXT = ta.TITLE_S
         LOGO_TXT = ta.LOGO_S
         NAME_TXT = ta.NAME_S
+    elif hgt < 24 or wth < 80:
+        TITLE_TXT = ta.TITLE_M
+        LOGO_TXT = ta.LOGO_M
+        NAME_TXT = ta.NAME_M
     else:
         TITLE_TXT = ta.TITLE_L
         LOGO_TXT = ta.LOGO_L
         NAME_TXT = ta.NAME_L
 
-    min_nRow_nCol = 4
-    max_nCol = 26
+    min_nRow_nCol = 0
+    max_nCol = min(26, wth // 4 - 1)
     max_nRow = hgt // 4
     COL_SYMS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
@@ -234,7 +239,7 @@ class ConnectFour:
             self.tm.move_xy(self.wth // 2 - 8, prpt_pd)
             + f"Player {self.sty_p2('2') + self.sty_default} has won!"
         )
-        prpt1_draw = self.tm.move_xy(self.wth // 2 - 6, prpt_pd) + "Draw!"
+        prpt1_draw = self.tm.move_xy(self.wth // 2 - 2, prpt_pd) + "Draw!"
         prpt1_ers = self.tm.move_xy(self.wth // 2 - 8, prpt_pd) + 18 * " "
 
         last_col = self.COL_SYMS[self.ncol - 1]

@@ -20,7 +20,6 @@ class ConnectFour:
     hgt = tm.height
     wth = tm.width
 
-
     if hgt < 11 or wth < 60:
         TITLE_TXT = ta.TITLE_S
         LOGO_TXT = ta.LOGO_S

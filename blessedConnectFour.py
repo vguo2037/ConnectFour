@@ -10,6 +10,7 @@ class ConnectFour:
     import numpy as np
     import time
     import getpass
+    import text_arts as ta
     from blessed import Terminal
 
     tm = Terminal()
@@ -19,31 +20,53 @@ class ConnectFour:
     hgt = tm.height
     wth = tm.width
 
+    if hgt < 24 or wth < 80:
+        TITLE_TXT = ta.TITLE_S
+        LOGO_TXT = ta.LOGO_S
+        NAME_TXT = ta.NAME_S
+    else:
+        TITLE_TXT = ta.TITLE_L
+        LOGO_TXT = ta.LOGO_L
+        NAME_TXT = ta.NAME_L
+
     min_nRow_nCol = 4
     max_nCol = 26
     max_nRow = hgt // 4
     COL_SYMS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    TITLE = "Connect Four"
-
-    TITLE = [
-        "  _____                       __    ____             \n",
-        " / ___/__  ___  ___  ___ ____/ /_  / __/__  __ ______\n",
-        "/ /__/ _ \\/ _ \\/ _ \\/ -_) __/ __/ / _// _ \\/ // / __/\n",
-        "\\___/\\___/_//_/_//_/\\__/\\__/\\__/ /_/  \\___/\\_,_/_/   \n",
-    ]
 
     ################################################################
     with tm.cbreak(), tm.hidden_cursor():
         # clear the screen
         print(tm.home + sty_default + tm.clear)
 
-        for i in range(len(TITLE)):
+        for i in range(len(LOGO_TXT)):
+            logo_part = (
+                tm.move_xy(
+                    wth // 2 - len(LOGO_TXT[0]) // 2,
+                    (hgt // 4 - len(LOGO_TXT) // 4) + i,
+                )
+                + LOGO_TXT[i]
+            )
+            print(logo_part, end="", flush=True)
+        for i in range(len(NAME_TXT)):
+            logo_part = (
+                tm.move_xy(
+                    wth // 2 - len(NAME_TXT[0]) // 2,
+                    (hgt // 4 - len(LOGO_TXT) // 4) + 2 + len(LOGO_TXT) + i,
+                )
+                + NAME_TXT[i]
+            )
+            print(logo_part, end="", flush=True)
+        time.sleep(3.5)
+        print(tm.home + sty_default + tm.clear)
+
+        for i in range(len(TITLE_TXT)):
             title_part = (
                 tm.move_xy(
-                    wth // 2 - len(TITLE[0]) // 2,
-                    hgt // 2 - len(TITLE) // 2 + i,
+                    wth // 2 - len(TITLE_TXT[0]) // 2,
+                    hgt // 2 - len(TITLE_TXT) // 2 + i,
                 )
-                + TITLE[i]
+                + TITLE_TXT[i]
             )
             print(title_part, end="", flush=True)
 
